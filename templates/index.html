@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrippleB Analysis Platform</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">TB</div>
+                <span>TrippleB</span>
+            </div>
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active">
+                    <span class="icon">📊</span> Dashboard
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="icon">📈</span> Analysis
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="icon">⚙️</span> Settings
+                </a>
+            </nav>
+            <div class="user-profile">
+                <div class="avatar">NB</div>
+                <div class="user-info">
+                    <span class="name">Nima Bahrami</span>
+                    <span class="role">Analyst</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="header-title">
+                    <h1>Game Theory Simulation</h1>
+                    <p>Strategic Form Analysis & Equilibrium Calculation</p>
+                </div>
+                <div class="header-actions">
+                    <button id="calculate-btn" class="btn btn-primary" onclick="calculateEquilibrium()">
+                        <span>⚡</span> Run Simulation
+                    </button>
+                </div>
+            </header>
+
+            <div class="dashboard-grid">
+                <!-- Nature Settings Card -->
+                <div class="card nature-card">
+                    <div class="card-header">
+                        <h2>Nature Settings</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="input-group">
+                            <label>Nature Strategies</label>
+                            <div class="strategy-inputs">
+                                <input type="text" id="nature-s1" value="Stable" placeholder="State 1">
+                                <input type="text" id="nature-s2" value="Unstable" placeholder="State 2">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Player 1 Card -->
+                <div class="card player-card">
+                    <div class="card-header">
+                        <h2>Player 1 Configuration</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="input-group">
+                            <label>Name</label>
+                            <input type="text" id="p1-name" value="Regulator">
+                        </div>
+                        <div class="input-group">
+                            <label>Strategies</label>
+                            <div class="strategy-inputs">
+                                <input type="text" id="p1-s1" value="Intervene" placeholder="Action 1">
+                                <input type="text" id="p1-s2" value="Not Intervene" placeholder="Action 2">
+                            </div>
+                        </div>
+
+                        <div class="payoff-section">
+                            <div class="section-header">
+                                <h3>Payoff Variables</h3>
+                                <button id="add-btn-p1" class="btn btn-sm btn-outline" onclick="showAddForm('p1')">+ Add
+                                    Variable</button>
+                            </div>
+                            <!-- Inline Add Form -->
+                            <div id="add-form-p1" class="add-var-form hidden">
+                                <div class="form-row">
+                                    <input type="text" id="new-var-p1" placeholder="Variable Name (e.g. Revenue)">
+                                    <div class="form-actions">
+                                        <button class="btn btn-sm btn-primary"
+                                            onclick="confirmAddVariable('p1')">Confirm</button>
+                                        <button class="btn btn-sm btn-outline"
+                                            onclick="hideAddForm('p1')">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-wrapper">
+                                <table id="p1-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Case</th>
+                                            <!-- Dynamic headers -->
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Rows generated by JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Player 2 Card -->
+                <div class="card player-card">
+                    <div class="card-header">
+                        <h2>Player 2 Configuration</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="input-group">
+                            <label>Name</label>
+                            <input type="text" id="p2-name" value="Firm">
+                        </div>
+                        <div class="input-group">
+                            <label>Strategies</label>
+                            <div class="strategy-inputs">
+                                <input type="text" id="p2-s1" value="Relocate" placeholder="Action 1">
+                                <input type="text" id="p2-s2" value="Not Relocate" placeholder="Action 2">
+                            </div>
+                        </div>
+
+                        <div class="payoff-section">
+                            <div class="section-header">
+                                <h3>Payoff Variables</h3>
+                                <button id="add-btn-p2" class="btn btn-sm btn-outline" onclick="showAddForm('p2')">+ Add
+                                    Variable</button>
+                            </div>
+                            <!-- Inline Add Form -->
+                            <div id="add-form-p2" class="add-var-form hidden">
+                                <div class="form-row">
+                                    <input type="text" id="new-var-p2" placeholder="Variable Name (e.g. Cost)">
+                                    <div class="form-actions">
+                                        <button class="btn btn-sm btn-primary"
+                                            onclick="confirmAddVariable('p2')">Confirm</button>
+                                        <button class="btn btn-sm btn-outline"
+                                            onclick="hideAddForm('p2')">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-wrapper">
+                                <table id="p2-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Case</th>
+                                            <!-- Dynamic headers -->
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Rows generated by JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div id="results-section" class="hidden">
+                <div class="card results-card">
+                    <div class="card-header">
+                        <h2>Analysis Results</h2>
+                        <span class="badge">Nash Equilibria Found</span>
+                    </div>
+                    <div class="card-body" id="results-content">
+                        <!-- Results injected here -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>
