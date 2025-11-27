@@ -14,7 +14,7 @@ A modern, AI-driven web application for analyzing strategic form games and calcu
 
 1.  **Clone the repository:**
     ```bash
-    git clone <your-repo-url>
+    git clone https://github.com/nimabahrami/game_theory_equilibrium.git
     cd trippleB
     ```
 
