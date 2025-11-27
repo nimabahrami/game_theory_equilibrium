@@ -275,3 +275,10 @@ function displayResults(equilibria) {
         resultsContent.appendChild(div);
     });
 }
+
+function toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+}

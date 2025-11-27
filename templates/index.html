@@ -34,12 +34,20 @@
             </div>
         </aside>
 
+        <!-- Sidebar Overlay -->
+        <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
         <!-- Main Content -->
         <main class="main-content">
             <header class="top-bar">
-                <div class="header-title">
-                    <h1>Game Theory Simulation</h1>
-                    <p>Strategic Form Analysis & Equilibrium Calculation</p>
+                <div class="header-left">
+                    <button id="sidebar-toggle" class="btn btn-icon mobile-only" onclick="toggleSidebar()">
+                        <span>☰</span>
+                    </button>
+                    <div class="header-title">
+                        <h1>Game Theory Simulation</h1>
+                        <p>Strategic Form Analysis & Equilibrium Calculation</p>
+                    </div>
                 </div>
                 <div class="header-actions">
                     <button id="calculate-btn" class="btn btn-primary" onclick="calculateEquilibrium()">

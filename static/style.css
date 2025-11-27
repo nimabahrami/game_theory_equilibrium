@@ -462,3 +462,81 @@ pre {
     margin: 0;
     white-space: pre-wrap;
 }
+
+/* Mobile Responsiveness */
+.mobile-only {
+    display: none;
+}
+
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 900;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100%;
+        z-index: 1000;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        box-shadow: var(--shadow-lg);
+    }
+
+    .sidebar.active {
+        transform: translateX(0);
+    }
+
+    .mobile-only {
+        display: inline-flex;
+    }
+
+    .btn-icon {
+        background: transparent;
+        border: 1px solid var(--border-color);
+        color: var(--text-primary);
+        padding: 8px;
+        border-radius: var(--radius-md);
+        font-size: 1.2rem;
+        width: 40px;
+        height: 40px;
+        justify-content: center;
+    }
+
+    .main-content {
+        padding: 20px;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .player-card {
+        grid-column: span 1;
+    }
+
+    .nature-card {
+        grid-column: span 1;
+    }
+}
