@@ -9,8 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add event listeners for strategy inputs to update row labels
     const strategyInputs = [
         'nature-s1', 'nature-s2',
-        'p1-strategies',
-        'p2-strategies'
+        'p1-s1', 'p1-s2',
+        'p2-s1', 'p2-s2'
     ];
 
     strategyInputs.forEach(id => {
@@ -27,17 +27,10 @@ document.addEventListener('DOMContentLoaded', () => {
 function updateRowLabels() {
     const n_s1 = document.getElementById('nature-s1').value || 'State 1';
     const n_s2 = document.getElementById('nature-s2').value || 'State 2';
-
-    // Parse strategies from comma-separated string
-    const p1_strats_raw = document.getElementById('p1-strategies').value || 'Action 1, Action 2';
-    const p1_strats = p1_strats_raw.split(',').map(s => s.trim());
-    const p1_s1 = p1_strats[0] || 'Action 1';
-    const p1_s2 = p1_strats[1] || 'Action 2';
-
-    const p2_strats_raw = document.getElementById('p2-strategies').value || 'Action 1, Action 2';
-    const p2_strats = p2_strats_raw.split(',').map(s => s.trim());
-    const p2_s1 = p2_strats[0] || 'Action 1';
-    const p2_s2 = p2_strats[1] || 'Action 2';
+    const p1_s1 = document.getElementById('p1-s1').value || 'Action 1';
+    const p1_s2 = document.getElementById('p1-s2').value || 'Action 2';
+    const p2_s1 = document.getElementById('p2-s1').value || 'Action 1';
+    const p2_s2 = document.getElementById('p2-s2').value || 'Action 2';
 
     const caseDescriptions = {
         'case1': `${n_s2}, ${p1_s1}, ${p2_s1}`,
@@ -156,8 +149,14 @@ async function calculateEquilibrium() {
         document.getElementById('nature-s2').value
     ];
 
-    const p1Strategies = document.getElementById('p1-strategies').value.split(',').map(s => s.trim()).filter(s => s);
-    const p2Strategies = document.getElementById('p2-strategies').value.split(',').map(s => s.trim()).filter(s => s);
+    const p1Strategies = [
+        document.getElementById('p1-s1').value,
+        document.getElementById('p1-s2').value
+    ];
+    const p2Strategies = [
+        document.getElementById('p2-s1').value,
+        document.getElementById('p2-s2').value
+    ];
 
     // Payoff Functions
     const p1Function = document.getElementById('p1-function').value.trim();
