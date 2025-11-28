@@ -27,6 +27,10 @@ def calculate():
     # }
     payoff_data = data.get('payoff_data', {})
     
+    # Payoff Functions
+    p1_payoff_function = data.get('p1_payoff_function', '')
+    p2_payoff_function = data.get('p2_payoff_function', '')
+    
     # Nature states
     nature = Player('nature', tuple(nature_strategies))
     
@@ -36,7 +40,7 @@ def calculate():
     
     # Create Game
     try:
-        extensive_form = ExtensiveForm(nature, player1, player2, payoff_data)
+        extensive_form = ExtensiveForm(nature, player1, player2, payoff_data, p1_payoff_function, p2_payoff_function)
         strategic_game = StrategicForm(extensive_form)
         equilibria = strategic_game.find_nash_equilibria()
         

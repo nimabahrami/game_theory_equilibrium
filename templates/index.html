@@ -83,12 +83,17 @@
                             <label>Name</label>
                             <input type="text" id="p1-name" value="Regulator">
                         </div>
-                        <div class="input-group">
-                            <label>Strategies</label>
-                            <div class="strategy-inputs">
-                                <input type="text" id="p1-s1" value="Intervene" placeholder="Action 1">
-                                <input type="text" id="p1-s2" value="Not Intervene" placeholder="Action 2">
-                            </div>
+                        <div class="form-group">
+                            <label>Strategies (comma separated)</label>
+                            <input type="text" id="p1-strategies" value="intervene, not intervene">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Payoff Function (optional)</label>
+                            <input type="text" id="p1-function" placeholder="e.g. Revenue - Cost + 2*Reputation"
+                                class="code-input">
+                            <small class="hint">Use variable names. Spaces are replaced by underscores (e.g. "Net
+                                Profit" -> Net_Profit).</small>
                         </div>
 
                         <div class="payoff-section">
@@ -136,12 +141,15 @@
                             <label>Name</label>
                             <input type="text" id="p2-name" value="Firm">
                         </div>
-                        <div class="input-group">
-                            <label>Strategies</label>
-                            <div class="strategy-inputs">
-                                <input type="text" id="p2-s1" value="Relocate" placeholder="Action 1">
-                                <input type="text" id="p2-s2" value="Not Relocate" placeholder="Action 2">
-                            </div>
+                        <div class="form-group">
+                            <label>Strategies (comma separated)</label>
+                            <input type="text" id="p2-strategies" value="relocate, not relocate">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Payoff Function (optional)</label>
+                            <input type="text" id="p2-function" placeholder="e.g. Wealth + Tech_Dep" class="code-input">
+                            <small class="hint">Use variable names. Spaces are replaced by underscores.</small>
                         </div>
 
                         <div class="payoff-section">

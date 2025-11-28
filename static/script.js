@@ -9,12 +9,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add event listeners for strategy inputs to update row labels
     const strategyInputs = [
         'nature-s1', 'nature-s2',
-        'p1-s1', 'p1-s2',
-        'p2-s1', 'p2-s2'
+        'p1-strategies',
+        'p2-strategies'
     ];
 
     strategyInputs.forEach(id => {
-        document.getElementById(id).addEventListener('input', updateRowLabels);
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('input', updateRowLabels);
+        }
     });
 
     // Initial update
@@ -24,33 +27,17 @@ document.addEventListener('DOMContentLoaded', () => {
 function updateRowLabels() {
     const n_s1 = document.getElementById('nature-s1').value || 'State 1';
     const n_s2 = document.getElementById('nature-s2').value || 'State 2';
-    const p1_s1 = document.getElementById('p1-s1').value || 'Action 1';
-    const p1_s2 = document.getElementById('p1-s2').value || 'Action 2';
-    const p2_s1 = document.getElementById('p2-s1').value || 'Action 1';
-    const p2_s2 = document.getElementById('p2-s2').value || 'Action 2';
 
-    // Logic for 8 cases based on tripple_b_gt.py CaseBuilder logic:
-    // Case 1: Unstable, Intervene, Relocate
-    // Case 2: Unstable, Not Intervene, Relocate
-    // Case 3: Stable, Intervene, Relocate
-    // Case 4: Stable, Not Intervene, Relocate
-    // Case 5: Unstable, Intervene, Not Relocate
-    // Case 6: Unstable, Not Intervene, Not Relocate
-    // Case 7: Stable, Intervene, Not Relocate
-    // Case 8: Stable, Not Intervene, Not Relocate
+    // Parse strategies from comma-separated string
+    const p1_strats_raw = document.getElementById('p1-strategies').value || 'Action 1, Action 2';
+    const p1_strats = p1_strats_raw.split(',').map(s => s.trim());
+    const p1_s1 = p1_strats[0] || 'Action 1';
+    const p1_s2 = p1_strats[1] || 'Action 2';
 
-    // Wait, let's double check the CaseBuilder logic in tripple_b_gt.py
-    // It maps strategy combinations to cases.
-    // Let's assume the order of cases 1-8 corresponds to specific combinations.
-    // Based on previous output:
-    // Case 1: Unstable, Intervene, Relocate
-    // Case 2: Unstable, Not Intervene, Relocate
-    // Case 3: Stable, Intervene, Relocate
-    // Case 4: Stable, Not Intervene, Relocate
-    // Case 5: Unstable, Intervene, Not Relocate
-    // Case 6: Unstable, Not Intervene, Not Relocate
-    // Case 7: Stable, Intervene, Not Relocate
-    // Case 8: Stable, Not Intervene, Not Relocate
+    const p2_strats_raw = document.getElementById('p2-strategies').value || 'Action 1, Action 2';
+    const p2_strats = p2_strats_raw.split(',').map(s => s.trim());
+    const p2_s1 = p2_strats[0] || 'Action 1';
+    const p2_s2 = p2_strats[1] || 'Action 2';
 
     const caseDescriptions = {
         'case1': `${n_s2}, ${p1_s1}, ${p2_s1}`,
@@ -71,7 +58,7 @@ function updateRowLabels() {
             const labelCell = row.querySelector('td:first-child');
             if (labelCell) {
                 labelCell.textContent = caseDescriptions[caseName];
-                labelCell.style.fontSize = '0.8em'; // Make it slightly smaller to fit
+                labelCell.style.fontSize = '0.8em';
             }
         });
     });
@@ -168,14 +155,13 @@ async function calculateEquilibrium() {
         document.getElementById('nature-s1').value,
         document.getElementById('nature-s2').value
     ];
-    const p1Strategies = [
-        document.getElementById('p1-s1').value,
-        document.getElementById('p1-s2').value
-    ];
-    const p2Strategies = [
-        document.getElementById('p2-s1').value,
-        document.getElementById('p2-s2').value
-    ];
+
+    const p1Strategies = document.getElementById('p1-strategies').value.split(',').map(s => s.trim()).filter(s => s);
+    const p2Strategies = document.getElementById('p2-strategies').value.split(',').map(s => s.trim()).filter(s => s);
+
+    // Payoff Functions
+    const p1Function = document.getElementById('p1-function').value.trim();
+    const p2Function = document.getElementById('p2-function').value.trim();
 
     const payoffData = {
         'p1': collectPlayerData('p1'),
@@ -194,7 +180,9 @@ async function calculateEquilibrium() {
         'nature_strategies': natureStrategies,
         'p1_strategies': p1Strategies,
         'p2_strategies': p2Strategies,
-        'payoff_data': payoffData
+        'payoff_data': payoffData,
+        'p1_payoff_function': p1Function,
+        'p2_payoff_function': p2Function
     };
 
     try {

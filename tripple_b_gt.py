@@ -11,31 +11,73 @@ class Player:
 
 
 class ExtensiveForm:
-    def __init__(self, nature, player1, player2, payoff_data=None):
-        self.player1 = player1    
-        self.player2 = player2
+    # payoff_data structure:
+    # {
+    #   'p1': {'var_name': {'case1': val, ...}, ...},
+    #   'p2': {'var_name': {'case1': val, ...}, ...}
+    # }
+    def __init__(self, nature, player1, player2, payoff_data, p1_function=None, p2_function=None):
         self.nature = nature
-        # payoff_data structure:
-        # {
-        #   'p1': {'var_name': {'case1': val, ...}, ...},
-        #   'p2': {'var_name': {'case1': val, ...}, ...}
-        # }
-        self.payoff_data = payoff_data if payoff_data else {}
+        self.player1 = player1
+        self.player2 = player2
+        self.payoff_data = payoff_data
+        self.p1_function = p1_function
+        self.p2_function = p2_function
         self.strategies_space = self.strategies_space_function()
         self.pure_strategies = self.generate_pure_strategies()
 
     def payoff(self, case):
-        # Calculate P1 payoff
-        p1_payoff = 0
-        if 'p1' in self.payoff_data:
-            for var_data in self.payoff_data['p1'].values():
-                p1_payoff += var_data.get(case, 0)
-        
-        # Calculate P2 payoff
-        p2_payoff = 0
-        if 'p2' in self.payoff_data:
-            for var_data in self.payoff_data['p2'].values():
-                p2_payoff += var_data.get(case, 0)
+        # Helper to sanitize variable names (replace spaces with underscores)
+        def sanitize(name):
+            return name.replace(" ", "_")
+
+        # Helper to evaluate payoff for a player
+        def evaluate_payoff(player_key, function_str):
+            if not function_str:
+                # Default: Summation of all variables
+                total = 0
+                if player_key in self.payoff_data:
+                    for var_data in self.payoff_data[player_key].values():
+                        total += var_data.get(case, 0)
+                return total
+            
+            # Sanitize input: remove leading/trailing whitespace
+            function_str = function_str.strip()
+            
+            try:
+                # 1. Prepare symbol values for this case
+                symbol_values = {}
+                if player_key in self.payoff_data:
+                    for var_name, var_data in self.payoff_data[player_key].items():
+                        sanitized_name = sanitize(var_name)
+                        symbol_values[sanitized_name] = var_data.get(case, 0)
+                
+                # 2. Parse the expression
+                expr = sympy.sympify(function_str)
+                
+                # 3. VALIDATION: Check for undefined variables
+                free_symbols = expr.free_symbols
+                defined_vars = set(symbol_values.keys())
+                
+                undefined_vars = []
+                for sym in free_symbols:
+                    sym_name = str(sym)
+                    if sym_name not in defined_vars:
+                        undefined_vars.append(sym_name)
+                
+                if undefined_vars:
+                    raise ValueError(f"Undefined variables in payoff function for {player_key}: {', '.join(undefined_vars)}")
+                
+                # 4. Substitute values
+                result = expr.subs(symbol_values)
+                
+                return result
+            except Exception as e:
+                # Propagate the error so it can be shown to the user
+                raise e
+
+        p1_payoff = evaluate_payoff('p1', self.p1_function)
+        p2_payoff = evaluate_payoff('p2', self.p2_function)
                 
         return (p1_payoff, p2_payoff)
 
