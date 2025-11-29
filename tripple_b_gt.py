@@ -91,7 +91,8 @@ class ExtensiveForm:
     def strategies_space_function(self):
         list_of_strategies_dict = []
         list_of_strategies = list(itertools.product(self.nature.strategies, self.player1.strategies, self.player2.strategies))
-        cases = CaseBuilder(list_of_strategies, self.nature.strategies)
+        # Pass full player objects to CaseBuilder
+        cases = CaseBuilder(list_of_strategies, self.nature, self.player1, self.player2)
         
 
         for items in list_of_strategies:
@@ -140,44 +141,58 @@ class ExtensiveForm:
         }
 
 class CaseBuilder:
-    def __init__(self, strategies, nature_states):
-        self.strategies_list = strategies
+    def __init__(self, strategies_list, nature, player1, player2):
+        self.strategies_list = strategies_list
+        self.nature = nature
+        self.player1 = player1
+        self.player2 = player2
         self.case = None
-        # Map dynamic states to logical 'stable'/'unstable' roles
-        # Assuming index 0 is 'stable' (prob 1-ro in original, but wait...)
-        # In original: nature=('stable', 'unstable'). Index 0=stable, Index 1=unstable.
-        # In payoff logic: state_0 (index 0) was associated with (1-ro) term in my previous thought, 
-        # BUT in user's formula: ro * unstable + (1-ro) * stable.
-        # So index 0 (stable) -> (1-ro). Index 1 (unstable) -> ro.
-        
-        self.state_stable = nature_states[0]
-        self.state_unstable = nature_states[1]
 
-    def case_definition(self,plays):
+    def case_definition(self, plays):
         # plays[0] is nature state
-        # plays[1] is regulator action
-        # plays[2] is firm action
+        # plays[1] is regulator action (P1)
+        # plays[2] is firm action (P2)
         
-        nature_state = plays[0]
-        regulator_action = plays[1]
-        firm_action = plays[2]
+        # Find indices to determine the case regardless of strategy names
+        # Nature: Index 0 = Stable, Index 1 = Unstable
+        # P1: Index 0 = Action 1 (e.g. Intervene), Index 1 = Action 2 (e.g. Not Intervene)
+        # P2: Index 0 = Action 1 (e.g. Relocate), Index 1 = Action 2 (e.g. Not Relocate)
         
-        if firm_action == 'relocate' and regulator_action == 'intervene' and nature_state == self.state_unstable:
+        try:
+            n_idx = self.nature.strategies.index(plays[0])
+            p1_idx = self.player1.strategies.index(plays[1])
+            p2_idx = self.player2.strategies.index(plays[2])
+        except ValueError:
+            self.case = None
+            return
+
+        # Mapping based on original logic:
+        # Case 1: Unstable (1), Intervene (0), Relocate (0)
+        if n_idx == 1 and p1_idx == 0 and p2_idx == 0:
             self.case = 'case1'
-        if firm_action == 'relocate' and regulator_action == 'not intervene' and nature_state == self.state_unstable:
+        # Case 2: Unstable (1), Not Intervene (1), Relocate (0)
+        elif n_idx == 1 and p1_idx == 1 and p2_idx == 0:
             self.case = 'case2'
-        if firm_action == 'relocate' and regulator_action == 'intervene' and nature_state == self.state_stable:
+        # Case 3: Stable (0), Intervene (0), Relocate (0)
+        elif n_idx == 0 and p1_idx == 0 and p2_idx == 0:
             self.case = 'case3'
-        if firm_action == 'relocate' and regulator_action == 'not intervene' and nature_state == self.state_stable:
+        # Case 4: Stable (0), Not Intervene (1), Relocate (0)
+        elif n_idx == 0 and p1_idx == 1 and p2_idx == 0:
             self.case = 'case4'
-        if firm_action == 'not relocate' and regulator_action == 'intervene' and nature_state == self.state_unstable:
+        # Case 5: Unstable (1), Intervene (0), Not Relocate (1)
+        elif n_idx == 1 and p1_idx == 0 and p2_idx == 1:
             self.case = 'case5'
-        if firm_action == 'not relocate' and regulator_action == 'not intervene' and nature_state == self.state_unstable:
+        # Case 6: Unstable (1), Not Intervene (1), Not Relocate (1)
+        elif n_idx == 1 and p1_idx == 1 and p2_idx == 1:
             self.case = 'case6'
-        if firm_action == 'not relocate' and regulator_action == 'intervene' and nature_state == self.state_stable:
+        # Case 7: Stable (0), Intervene (0), Not Relocate (1)
+        elif n_idx == 0 and p1_idx == 0 and p2_idx == 1:
             self.case = 'case7'
-        if firm_action == 'not relocate' and regulator_action == 'not intervene' and nature_state == self.state_stable:
+        # Case 8: Stable (0), Not Intervene (1), Not Relocate (1)
+        elif n_idx == 0 and p1_idx == 1 and p2_idx == 1:
             self.case = 'case8'
+        else:
+            self.case = None
 
 class StrategicForm:
     def __init__(self, extensive_form):
