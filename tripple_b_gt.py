@@ -1,6 +1,7 @@
 import itertools
 import pprint
 import sympy
+import re
 
 
 class Player:
@@ -27,9 +28,9 @@ class ExtensiveForm:
         self.pure_strategies = self.generate_pure_strategies()
 
     def payoff(self, case):
-        # Helper to sanitize variable names (replace spaces with underscores)
+        # Helper to sanitize variable names (replace spaces with underscores, lower case)
         def sanitize(name):
-            return name.replace(" ", "_")
+            return name.strip().lower().replace(" ", "_")
 
         # Helper to evaluate payoff for a player
         def evaluate_payoff(player_key, function_str):
@@ -41,8 +42,14 @@ class ExtensiveForm:
                         total += var_data.get(case, 0)
                 return total
             
-            # Sanitize input: remove leading/trailing whitespace
-            function_str = function_str.strip()
+            # Sanitize input: remove leading/trailing whitespace and lower case
+            function_str = function_str.strip().lower()
+            
+            # Smart Sanitization: Replace spaces between words with underscores
+            # This regex looks for a space that is preceded by a word char and followed by a word char
+            # e.g. "national wealth" -> "national_wealth"
+            # But "wealth + tax" -> "wealth + tax" (because + is not a word char)
+            function_str = re.sub(r'(?<=[a-z0-9])\s+(?=[a-z0-9])', '_', function_str)
             
             try:
                 # 1. Prepare symbol values for this case
