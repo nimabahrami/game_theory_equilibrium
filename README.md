@@ -1,6 +1,6 @@
 # TrippleB - Game Theory Analysis Platform
 
-A modern, AI-driven web application for analyzing strategic form games and calculating Nash Equilibria.
+A modern, web application for analyzing strategic form games and calculating Nash Equilibria.
 
 ## Features
 
